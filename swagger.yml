@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: "RP Flask REST API"
+  description: "An API about F1 drivers"
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
+
+components:
+  schemas:
+    Driver:
+      type: "object"
+      required:
+        - driver_ref_name
+      properties:
+        driver_ref_name:
+          type: "string"
+        forename:
+          type: "string"
+        surname:
+          type: "string"
+        code:
+          type: "string"
+        dob:
+          type: "string"
+        nationality:
+          type: "string"
+        number:
+          type: "string"
+  parameters:
+    driver_ref_name:
+      name: "driver_ref_name"
+      description: "Unique reference name of the driver to get"
+      in: path
+      required: True
+      schema:
+        type: "string"
+    driver_id:
+      name: "driver_id"
+      description: "ID of the driver"
+      in: path
+      required: true
+      schema:
+        type: "integer"
+
+paths:
+  /drivers:
+    get:
+      operationId: "driver.read_all"
+      tags:
+        - "Driver"
+      summary: "Read the list of drivers"
+      responses:
+        "200":
+          description: "Successfully read drivers list"
+    post:
+      operationId: "driver.create"
+      tags:
+        - Driver
+      summary: "Create a driver"
+      requestBody:
+          description: "Driver to create"
+          required: True
+          x-body-name: driver
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+      responses:
+        "201":
+          description: "Successfully created a driver"
+  /driver/{driver_ref_name}:
+    get:
+      operationId: "driver.read_one"
+      tags:
+        - Driver
+      summary: "Read one driver"
+      parameters:
+        - $ref: "#/components/parameters/driver_ref_name"
+      responses:
+        "200":
+          description: "Successfully read driver"
+    put:
+      tags:
+        - Driver
+      operationId: "driver.update"
+      summary: "Update a driver"
+      parameters:
+        - $ref: "#/components/parameters/driver_ref_name"
+      responses:
+        "200":
+          description: "Successfully updated driver"
+      requestBody:
+        x-body-name: driver
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Driver"
+    delete:
+      tags:
+        - Driver
+      operationId: "driver.delete"
+      summary: "Delete a driver"
+      parameters:
+        - $ref: "#/components/parameters/driver_ref_name"
+      responses:
+        "204":
+          description: "Successfully deleted driver"
+  /results/{driver_id}:
+    get:
+      operationId: "results.read_driver_results"
+      tags:
+        - Results
+      summary: "Read one driver results"
+      parameters:
+        - $ref: "#/components/parameters/driver_id"
+      responses:
+        "200":
+          description: "Successfully read one driver results"
